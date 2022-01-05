@@ -5,4 +5,5 @@ import com.cognizant.code.test.api.CartProductSaveRequestData;
 public interface CartService {
 
     void saveCartProduct(CartProductSaveRequestData requestData);
+
 }
