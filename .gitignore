@@ -51,4 +51,3 @@ $RECYCLE.BIN/
 ### Other ###
 *.swp
 gradle.properties
-application*.yml
