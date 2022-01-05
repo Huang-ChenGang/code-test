@@ -1,4 +1,4 @@
-package com.cognizant.code.test.product.domain.model;
+package com.cognizant.code.test.domain.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
