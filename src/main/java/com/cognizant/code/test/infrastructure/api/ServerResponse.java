@@ -1,4 +1,4 @@
-package com.cognizant.code.test.infrastructure;
+package com.cognizant.code.test.infrastructure.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,4 +23,7 @@ public final class ServerResponse<T> {
         return new ServerResponse<>("0", "success", data);
     }
 
+    public static <T> ServerResponse<T> error(Exception e) {
+        return new ServerResponse<>("1", e.getMessage(), null);
+    }
 }

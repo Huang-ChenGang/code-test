@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -24,6 +26,7 @@ class ProductRepositoryTest {
     void testSave() {
         Product product = new Product();
         product.setName("test product");
+        product.setTax(BigDecimal.TEN);
         repository.save(product);
         assertEquals(1, repository.findAll().size());
         assertNotNull(repository.findAll().get(0).getId());

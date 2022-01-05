@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +21,14 @@ public class ProductServiceImpl implements ProductService {
         this.repository = repository;
     }
 
+    // for test
     @PostConstruct
     private void init() {
         List<Product> initList = new ArrayList<>();
         for (int i = 0; i < 35; i++) {
             Product product = new Product();
             product.setName("product " + i);
+            product.setTax(BigDecimal.TEN);
             initList.add(product);
         }
         repository.saveAll(initList);
