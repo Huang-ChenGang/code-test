@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class ProductRepositoryTest {
@@ -25,5 +26,8 @@ class ProductRepositoryTest {
         product.setName("test product");
         repository.save(product);
         assertEquals(1, repository.findAll().size());
+        assertNotNull(repository.findAll().get(0).getId());
+        assertNotNull(repository.findAll().get(0).getCreateTime());
+        assertNotNull(repository.findAll().get(0).getUpdateTime());
     }
 }
