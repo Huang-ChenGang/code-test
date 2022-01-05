@@ -1,6 +1,6 @@
 package com.cognizant.code.test.application.controller;
 
-import com.cognizant.code.test.api.ProductResponseData;
+import com.cognizant.code.test.api.ProductQueryResponseData;
 import com.cognizant.code.test.application.dto.ProductDto;
 import com.cognizant.code.test.application.service.ProductApplicationService;
 import com.cognizant.code.test.infrastructure.api.ServerResponse;
@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ServerResponse<Page<ProductResponseData>> findAll(
+    public ServerResponse<Page<ProductQueryResponseData>> findAll(
             @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer pageNo,
             @RequestParam(required = false, defaultValue = "10") @Positive Integer pageSize) {
         log.info("attempt to find all product by pageNo: {}, pageSize: {}", pageNo, pageSize);

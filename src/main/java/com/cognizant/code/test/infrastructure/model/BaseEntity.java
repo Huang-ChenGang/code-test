@@ -3,16 +3,15 @@ package com.cognizant.code.test.infrastructure.model;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Random;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
 
     @Id
@@ -32,8 +31,8 @@ public class BaseEntity {
 
     @PrePersist
     private void onCreate() {
-        if (StringUtils.isEmpty(id)) {
-            id = getUniqueKey();
+        if (StringUtils.isEmpty(this.id)) {
+            this.id = getUniqueKey();
         }
     }
 

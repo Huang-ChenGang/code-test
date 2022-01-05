@@ -26,8 +26,11 @@ class ProductRepositoryTest {
     void testSave() {
         Product product = new Product();
         product.setName("test product");
+        product.setPrice(BigDecimal.TEN);
         product.setTax(BigDecimal.TEN);
+        product.setQuantity(100);
         repository.save(product);
+
         assertEquals(1, repository.findAll().size());
         assertNotNull(repository.findAll().get(0).getId());
         assertNotNull(repository.findAll().get(0).getCreateTime());

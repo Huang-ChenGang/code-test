@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,9 @@ class ProductServiceTest {
         for (int i = 0; i < 35; i++) {
             Product product = new Product();
             product.setName("product " + i);
+            product.setPrice(BigDecimal.TEN);
+            product.setTax(BigDecimal.TEN);
+            product.setQuantity(100);
             initList.add(product);
         }
         repository.saveAll(initList);

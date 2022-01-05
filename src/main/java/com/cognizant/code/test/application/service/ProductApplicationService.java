@@ -6,4 +6,6 @@ import org.springframework.data.domain.Page;
 public interface ProductApplicationService {
 
     Page<ProductDto> findAll(int pageNo, int pageSize);
+
+    ProductDto findById(String id);
 }

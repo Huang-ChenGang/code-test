@@ -18,4 +18,9 @@ public class ProductApplicationServiceImpl implements ProductApplicationService 
         return service.findAll(pageNo, pageSize)
                 .map(ProductDto::fromModel);
     }
+
+    @Override
+    public ProductDto findById(String id) {
+        return ProductDto.fromModel(service.findById(id));
+    }
 }
