@@ -1,7 +1,6 @@
 package com.cognizant.code.test.domain.repository;
 
 import com.cognizant.code.test.domain.model.Product;
-import com.cognizant.code.test.domain.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
