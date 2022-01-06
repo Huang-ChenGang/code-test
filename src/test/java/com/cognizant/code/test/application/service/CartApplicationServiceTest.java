@@ -1,10 +1,12 @@
 package com.cognizant.code.test.application.service;
 
-import com.cognizant.code.test.api.CartProductSaveRequestData;
+import com.cognizant.code.test.api.CartItemAddRequestData;
+import com.cognizant.code.test.api.CartItemAddRequestData.CartItemAddData;
 import com.cognizant.code.test.domain.model.Product;
-import com.cognizant.code.test.domain.repository.CartProductRepository;
+import com.cognizant.code.test.domain.repository.CartItemRepository;
 import com.cognizant.code.test.domain.repository.CartRepository;
 import com.cognizant.code.test.domain.repository.ProductRepository;
+import com.cognizant.code.test.infrastructure.exception.CodeTestException;
 import com.cognizant.code.test.infrastructure.handler.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,7 +28,7 @@ class CartApplicationServiceTest {
     @Autowired
     private CartRepository cartRepository;
     @Autowired
-    private CartProductRepository cartProductRepository;
+    private CartItemRepository cartItemRepository;
     @Autowired
     private ProductRepository productRepository;
 
@@ -34,12 +37,12 @@ class CartApplicationServiceTest {
     @BeforeEach
     void setUp() {
         cartRepository.deleteAll();
-        cartProductRepository.deleteAll();
+        cartItemRepository.deleteAll();
         productRepository.deleteAll();
     }
 
     @Test
-    void saveCartProduct() {
+    void testAddCartItem() {
         Product product = new Product();
         product.setName("test product");
         product.setPrice(BigDecimal.TEN);
@@ -47,24 +50,22 @@ class CartApplicationServiceTest {
         product.setQuantity(100);
         product = productRepository.save(product);
 
-        CartProductSaveRequestData requestData = new CartProductSaveRequestData();
+        CartItemAddRequestData requestData = new CartItemAddRequestData();
         requestData.setCustomerId(customerId);
-        requestData.setProductId(product.getId());
-        requestData.setQuantity(1);
-        service.saveCartProduct(requestData);
+        requestData.setProductList(Collections.singletonList(new CartItemAddData(product.getId(), 1)));
+        service.addCartItem(requestData);
 
         assertEquals(1, cartRepository.findAll().size());
-        assertEquals(1, cartProductRepository.findAll().size());
+        assertEquals(1, cartItemRepository.findAll().size());
     }
 
     @Test
-    void testSaveProductNotExist() {
-        CartProductSaveRequestData requestData = new CartProductSaveRequestData();
+    void testAddCartItemProductNotExist() {
+        CartItemAddRequestData requestData = new CartItemAddRequestData();
         requestData.setCustomerId(customerId);
-        requestData.setProductId("12459");
-        requestData.setQuantity(1);
+        requestData.setProductList(Collections.singletonList(new CartItemAddData("2349", 1)));
 
-        assertThrows(ProductNotFoundException.class, () -> service.saveCartProduct(requestData));
+        assertThrows(ProductNotFoundException.class, () -> service.addCartItem(requestData));
     }
 
     @Test
@@ -76,11 +77,34 @@ class CartApplicationServiceTest {
         product.setQuantity(100);
         product = productRepository.save(product);
 
-        CartProductSaveRequestData requestData = new CartProductSaveRequestData();
+        CartItemAddRequestData requestData = new CartItemAddRequestData();
         requestData.setCustomerId(customerId);
-        requestData.setProductId(product.getId());
-        requestData.setQuantity(200);
+        requestData.setProductList(Collections.singletonList(new CartItemAddData(product.getId(), 200)));
 
-        assertThrows(IllegalArgumentException.class, () -> service.saveCartProduct(requestData));
+        assertThrows(CodeTestException.class, () -> service.addCartItem(requestData));
+    }
+
+    @Test
+    void testIllegalQuantityWhenExist() {
+        Product product = new Product();
+        product.setName("test product");
+        product.setPrice(BigDecimal.TEN);
+        product.setTax(BigDecimal.TEN);
+        product.setQuantity(100);
+        product = productRepository.save(product);
+
+        CartItemAddRequestData requestData = new CartItemAddRequestData();
+        requestData.setCustomerId(customerId);
+        requestData.setProductList(Collections.singletonList(new CartItemAddData(product.getId(), 90)));
+        service.addCartItem(requestData);
+
+        assertEquals(1, cartRepository.findAll().size());
+        assertEquals(1, cartItemRepository.findAll().size());
+
+        CartItemAddRequestData requestData2 = new CartItemAddRequestData();
+        requestData2.setCustomerId(customerId);
+        requestData2.setProductList(Collections.singletonList(new CartItemAddData(product.getId(), 50)));
+
+        assertThrows(CodeTestException.class, () -> service.addCartItem(requestData));
     }
 }

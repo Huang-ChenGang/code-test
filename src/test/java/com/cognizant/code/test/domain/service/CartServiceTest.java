@@ -2,7 +2,7 @@ package com.cognizant.code.test.domain.service;
 
 import com.cognizant.code.test.api.CartProductSaveRequestData;
 import com.cognizant.code.test.domain.model.Product;
-import com.cognizant.code.test.domain.repository.CartProductRepository;
+import com.cognizant.code.test.domain.repository.CartItemRepository;
 import com.cognizant.code.test.domain.repository.CartRepository;
 import com.cognizant.code.test.domain.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ class CartServiceTest {
     @Autowired
     private CartRepository cartRepository;
     @Autowired
-    private CartProductRepository cartProductRepository;
+    private CartItemRepository cartItemRepository;
     @Autowired
     private ProductRepository productRepository;
 
@@ -32,7 +32,7 @@ class CartServiceTest {
     @BeforeEach
     void setUp() {
         cartRepository.deleteAll();
-        cartProductRepository.deleteAll();
+        cartItemRepository.deleteAll();
         productRepository.deleteAll();
     }
 
@@ -52,7 +52,7 @@ class CartServiceTest {
         service.saveCartProduct(requestData);
 
         assertEquals(1, cartRepository.findAll().size());
-        assertEquals(1, cartProductRepository.findAll().size());
+        assertEquals(1, cartItemRepository.findAll().size());
     }
 
     @Test
@@ -71,7 +71,7 @@ class CartServiceTest {
         service.saveCartProduct(requestData);
 
         assertEquals(1, cartRepository.findAll().size());
-        assertEquals(0, cartProductRepository.findAll().size());
+        assertEquals(0, cartItemRepository.findAll().size());
     }
 
 }

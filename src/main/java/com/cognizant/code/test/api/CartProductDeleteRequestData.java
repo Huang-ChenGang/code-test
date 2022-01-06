@@ -9,12 +9,12 @@ import java.util.List;
 
 @Validated
 @Data
-public class CartSaveRequestData {
+public class CartProductDeleteRequestData {
 
     @NotBlank
     private String customerId;
 
     @NotEmpty
-    private List<String> productIdList;
+    private List<String> cartProductIdList;
 
 }

@@ -24,7 +24,7 @@ import javax.validation.constraints.PositiveOrZero;
                 @UniqueConstraint(name = "uq_product", columnNames = {"cartId", "productId"})
         }
 )
-public class CartProduct extends BaseEntity {
+public class CartItem extends BaseEntity {
 
     @NotBlank
     @Column(nullable = false, length = 40)
@@ -39,7 +39,7 @@ public class CartProduct extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    public CartProduct(String cartId, String productId, Integer quantity) {
+    public CartItem(String cartId, String productId, Integer quantity) {
         this.cartId = cartId;
         this.productId = productId;
         this.quantity = quantity;

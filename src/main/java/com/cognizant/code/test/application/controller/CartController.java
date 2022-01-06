@@ -1,14 +1,12 @@
 package com.cognizant.code.test.application.controller;
 
+import com.cognizant.code.test.api.CartItemAddRequestData;
 import com.cognizant.code.test.api.CartProductSaveRequestData;
 import com.cognizant.code.test.application.service.CartApplicationService;
 import com.cognizant.code.test.infrastructure.api.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -25,8 +23,15 @@ public class CartController {
     }
 
     @PostMapping("/product")
-    public ServerResponse<Void> saveCartProduct(@RequestBody @Valid CartProductSaveRequestData requestData) {
-        log.info("attempt to save cart product for request data: {}", requestData);
+    public ServerResponse<Void> addCartProduct(@RequestBody @Valid CartItemAddRequestData requestData) {
+        log.info("attempt to add product to cart for request data: {}", requestData);
+        service.addCartItem(requestData);
+        return ServerResponse.success();
+    }
+
+    @PutMapping("/product")
+    public ServerResponse<Void> updateCartProduct(@RequestBody @Valid CartProductSaveRequestData requestData) {
+        log.info("attempt to update product to cart for request data: {}", requestData);
         service.saveCartProduct(requestData);
         return ServerResponse.success();
     }
