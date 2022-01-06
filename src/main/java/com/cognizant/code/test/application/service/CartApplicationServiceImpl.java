@@ -4,12 +4,14 @@ import com.cognizant.code.test.api.CartItemAddRequestData;
 import com.cognizant.code.test.api.CartItemAddRequestData.CartItemAddData;
 import com.cognizant.code.test.api.CartItemDeleteRequestData;
 import com.cognizant.code.test.api.CartItemUpdateRequestData;
+import com.cognizant.code.test.application.dto.ProductTotalPriceDto;
 import com.cognizant.code.test.domain.model.CartItem;
 import com.cognizant.code.test.domain.service.CartService;
 import com.cognizant.code.test.infrastructure.exception.CodeTestException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +66,12 @@ public class CartApplicationServiceImpl implements CartApplicationService {
 
     @Override
     public BigDecimal getOverallBill(String customerId) {
-        return null;
+        List<CartItem> cartItemList = cartService.findCartItemList(customerId);
+
+        List<ProductTotalPriceDto> requestDtoList = cartItemList.stream()
+                .map(c -> new ProductTotalPriceDto(c.getProductId(), c.getQuantity()))
+                .collect(Collectors.toList());
+
+        return productApplicationService.calculateTotalPrice(requestDtoList);
     }
 }

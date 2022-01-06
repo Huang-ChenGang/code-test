@@ -10,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 
 @Slf4j
 @Validated
@@ -42,5 +44,11 @@ public class CartController {
         log.info("attempt to delete products from cart for request data: {}", requestData);
         service.deleteCartItem(requestData);
         return ServerResponse.success();
+    }
+
+    @GetMapping("/overall-bill/{customerId}")
+    public ServerResponse<BigDecimal> getOverallBill(@PathVariable @NotBlank String customerId) {
+        log.info("attempt to get overall bill for customerId: {}", customerId);
+        return ServerResponse.success(service.getOverallBill(customerId));
     }
 }
