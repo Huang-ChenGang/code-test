@@ -1,6 +1,7 @@
 package com.cognizant.code.test.application.controller;
 
 import com.cognizant.code.test.api.CartItemAddRequestData;
+import com.cognizant.code.test.api.CartItemDeleteRequestData;
 import com.cognizant.code.test.api.CartItemUpdateRequestData;
 import com.cognizant.code.test.application.service.CartApplicationService;
 import com.cognizant.code.test.infrastructure.api.ServerResponse;
@@ -22,9 +23,9 @@ public class CartController {
         this.service = service;
     }
 
-    @PostMapping("/product")
+    @PostMapping("/products")
     public ServerResponse<Void> addCartProduct(@RequestBody @Valid CartItemAddRequestData requestData) {
-        log.info("attempt to add product to cart for request data: {}", requestData);
+        log.info("attempt to add products to cart for request data: {}", requestData);
         service.addCartItem(requestData);
         return ServerResponse.success();
     }
@@ -33,6 +34,13 @@ public class CartController {
     public ServerResponse<Void> updateCartProduct(@RequestBody @Valid CartItemUpdateRequestData requestData) {
         log.info("attempt to update product to cart for request data: {}", requestData);
         service.updateCartItem(requestData);
+        return ServerResponse.success();
+    }
+
+    @DeleteMapping("/products")
+    public ServerResponse<Void> deleteCartProduct(@RequestBody @Valid CartItemDeleteRequestData requestData) {
+        log.info("attempt to delete products from cart for request data: {}", requestData);
+        service.deleteCartItem(requestData);
         return ServerResponse.success();
     }
 }

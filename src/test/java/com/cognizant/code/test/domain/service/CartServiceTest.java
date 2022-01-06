@@ -2,6 +2,7 @@ package com.cognizant.code.test.domain.service;
 
 import com.cognizant.code.test.api.CartItemAddRequestData;
 import com.cognizant.code.test.api.CartItemAddRequestData.CartItemAddData;
+import com.cognizant.code.test.api.CartItemDeleteRequestData;
 import com.cognizant.code.test.api.CartItemUpdateRequestData;
 import com.cognizant.code.test.domain.model.Cart;
 import com.cognizant.code.test.domain.model.CartItem;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -270,6 +272,49 @@ class CartServiceTest {
                 .findByCartIdAndProductId(cart.getId(), product2.getId()).orElseThrow();
 
         assertEquals(3, updatedItem.getQuantity());
+    }
+
+    @Test
+    void testDeleteCartItem() {
+        Product product = new Product();
+        product.setName("test product");
+        product.setPrice(BigDecimal.TEN);
+        product.setTax(BigDecimal.TEN);
+        product.setQuantity(100);
+        product = productRepository.save(product);
+
+        Product product2 = new Product();
+        product2.setName("test product 2");
+        product2.setPrice(BigDecimal.TEN);
+        product2.setTax(BigDecimal.TEN);
+        product2.setQuantity(100);
+        product2 = productRepository.save(product2);
+
+        CartItemAddRequestData requestData = new CartItemAddRequestData();
+        requestData.setCustomerId(customerId);
+
+        List<CartItemAddData> cartItemAddDataList = new ArrayList<>();
+        cartItemAddDataList.add(new CartItemAddData(product.getId(), 1));
+        cartItemAddDataList.add(new CartItemAddData(product2.getId(), 2));
+        requestData.setProductList(cartItemAddDataList);
+        service.addCartItem(requestData);
+
+        assertEquals(1, cartRepository.findAll().size());
+        assertEquals(2, cartItemRepository.findAll().size());
+
+        Cart cart = cartRepository.findByCustomerId(customerId).orElseThrow();
+        CartItem cartItem = cartItemRepository
+                .findByCartIdAndProductId(cart.getId(), product.getId()).orElseThrow();
+        CartItem cartItem2 = cartItemRepository
+                .findByCartIdAndProductId(cart.getId(), product2.getId()).orElseThrow();
+
+        CartItemDeleteRequestData deleteRequestData = new CartItemDeleteRequestData();
+        deleteRequestData.setCustomerId(customerId);
+        deleteRequestData.setCartItemIdList(Arrays.asList(cartItem.getId(), cartItem2.getId()));
+        service.deleteCartItem(deleteRequestData);
+
+        assertEquals(1, cartRepository.findAll().size());
+        assertEquals(0, cartItemRepository.findAll().size());
     }
 
 }

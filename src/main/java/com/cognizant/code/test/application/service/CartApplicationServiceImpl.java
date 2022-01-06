@@ -2,6 +2,7 @@ package com.cognizant.code.test.application.service;
 
 import com.cognizant.code.test.api.CartItemAddRequestData;
 import com.cognizant.code.test.api.CartItemAddRequestData.CartItemAddData;
+import com.cognizant.code.test.api.CartItemDeleteRequestData;
 import com.cognizant.code.test.api.CartItemUpdateRequestData;
 import com.cognizant.code.test.application.dto.ProductDto;
 import com.cognizant.code.test.domain.model.CartItem;
@@ -54,5 +55,10 @@ public class CartApplicationServiceImpl implements CartApplicationService {
         }
 
         cartService.updateCartItem(requestData);
+    }
+
+    @Override
+    public void deleteCartItem(CartItemDeleteRequestData requestData) {
+        cartService.deleteCartItem(requestData);
     }
 }

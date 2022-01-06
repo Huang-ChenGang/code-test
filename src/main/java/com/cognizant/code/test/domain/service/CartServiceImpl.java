@@ -1,6 +1,7 @@
 package com.cognizant.code.test.domain.service;
 
 import com.cognizant.code.test.api.CartItemAddRequestData;
+import com.cognizant.code.test.api.CartItemDeleteRequestData;
 import com.cognizant.code.test.api.CartItemUpdateRequestData;
 import com.cognizant.code.test.domain.model.Cart;
 import com.cognizant.code.test.domain.model.CartItem;
@@ -89,6 +90,26 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartItem findCartItem(String cartItemId) {
         return cartItemRepository.findById(cartItemId).orElseThrow(CartItemNotFoundException::new);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCartItem(CartItemDeleteRequestData requestData) {
+        Optional<Cart> cartOptional = cartRepository.findByCustomerId(requestData.getCustomerId());
+        if (cartOptional.isEmpty()) {
+            throw new CodeTestForbiddenException();
+        }
+
+        Cart cart = cartOptional.get();
+        requestData.getCartItemIdList().stream()
+                .filter(cId -> cartItemRepository.findById(cId).isPresent())
+                .peek(cId -> {
+                    CartItem cartItem = findCartItem(cId);
+                    if (!cart.getId().equals(cartItem.getCartId())) {
+                        throw new CodeTestForbiddenException();
+                    }
+                })
+                .forEach(cartItemRepository::deleteById);
     }
 
 }
