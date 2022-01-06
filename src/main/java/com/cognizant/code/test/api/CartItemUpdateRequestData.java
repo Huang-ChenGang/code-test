@@ -1,27 +1,24 @@
 package com.cognizant.code.test.api;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 
 @Validated
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CartProductSaveRequestData {
+public class CartItemUpdateRequestData {
 
     @NotBlank
     private String customerId;
 
     @NotBlank
-    private String productId;
+    private String cartItemId;
 
     @NotNull
-    @PositiveOrZero
+    @Positive
     private Integer quantity;
+
 }

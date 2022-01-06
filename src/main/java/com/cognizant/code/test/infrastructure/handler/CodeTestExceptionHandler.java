@@ -2,6 +2,7 @@ package com.cognizant.code.test.infrastructure.handler;
 
 import com.cognizant.code.test.infrastructure.api.ServerResponse;
 import com.cognizant.code.test.infrastructure.exception.CodeTestException;
+import com.cognizant.code.test.infrastructure.exception.CodeTestForbiddenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +20,15 @@ public class CodeTestExceptionHandler extends ResponseEntityExceptionHandler {
     })
     public ServerResponse<Void> handleBadRequest(RuntimeException e) {
         log.error("bad request exception occurs", e);
+        return ServerResponse.error(e);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({
+            CodeTestForbiddenException.class
+    })
+    public ServerResponse<Void> handleForbidden(RuntimeException e) {
+        log.error("forbidden exception occurs", e);
         return ServerResponse.error(e);
     }
 

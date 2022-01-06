@@ -1,11 +1,13 @@
 package com.cognizant.code.test.domain.service;
 
 import com.cognizant.code.test.api.CartItemAddRequestData;
-import com.cognizant.code.test.api.CartProductSaveRequestData;
+import com.cognizant.code.test.api.CartItemUpdateRequestData;
 import com.cognizant.code.test.domain.model.Cart;
 import com.cognizant.code.test.domain.model.CartItem;
 import com.cognizant.code.test.domain.repository.CartItemRepository;
 import com.cognizant.code.test.domain.repository.CartRepository;
+import com.cognizant.code.test.infrastructure.exception.CartItemNotFoundException;
+import com.cognizant.code.test.infrastructure.exception.CodeTestForbiddenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,29 +28,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Transactional
-    @Override
-    public void saveCartProduct(CartProductSaveRequestData requestData) {
-        Cart cart = cartRepository.findByCustomerId(requestData.getCustomerId())
-                .orElseGet(() -> cartRepository.save(new Cart(requestData.getCustomerId())));
-
-        Optional<CartItem> cartProductOptional = cartItemRepository
-                .findByCartIdAndProductId(cart.getId(), requestData.getProductId());
-        if (cartProductOptional.isPresent()) {
-            CartItem cartItem = cartProductOptional.get();
-            log.info("update product for exist cart: {}", cartItem);
-            cartItem.setQuantity(requestData.getQuantity());
-            cartItemRepository.save(cartItem);
-            return;
-        }
-
-        if (requestData.getQuantity() == 0) {
-            return;
-        }
-
-        cartItemRepository.save(new CartItem(
-                cart.getId(), requestData.getProductId(), requestData.getQuantity()));
-    }
-
     @Override
     public void addCartItem(CartItemAddRequestData requestData) {
         Cart cart = cartRepository.findByCustomerId(requestData.getCustomerId())
@@ -87,6 +66,29 @@ public class CartServiceImpl implements CartService {
         log.info("found product quantity: {} for customerId: {}, productId: {}",
                 cartItemOptional.get().getQuantity(), customerId, productId);
         return cartItemOptional.get().getQuantity();
+    }
+
+    @Transactional
+    @Override
+    public void updateCartItem(CartItemUpdateRequestData requestData) {
+        Optional<Cart> cartOptional = cartRepository.findByCustomerId(requestData.getCustomerId());
+        if (cartOptional.isEmpty()) {
+            throw new CodeTestForbiddenException();
+        }
+
+        Cart cart = cartOptional.get();
+        CartItem cartItem = findCartItem(requestData.getCartItemId());
+        if (!cart.getId().equals(cartItem.getCartId())) {
+            throw new CodeTestForbiddenException();
+        }
+
+        cartItem.setQuantity(requestData.getQuantity());
+        cartItemRepository.save(cartItem);
+    }
+
+    @Override
+    public CartItem findCartItem(String cartItemId) {
+        return cartItemRepository.findById(cartItemId).orElseThrow(CartItemNotFoundException::new);
     }
 
 }

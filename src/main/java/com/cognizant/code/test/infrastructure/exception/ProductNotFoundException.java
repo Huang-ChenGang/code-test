@@ -1,6 +1,4 @@
-package com.cognizant.code.test.infrastructure.handler;
-
-import com.cognizant.code.test.infrastructure.exception.CodeTestException;
+package com.cognizant.code.test.infrastructure.exception;
 
 public class ProductNotFoundException extends CodeTestException {
 

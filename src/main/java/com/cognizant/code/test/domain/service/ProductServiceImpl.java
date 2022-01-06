@@ -2,7 +2,7 @@ package com.cognizant.code.test.domain.service;
 
 import com.cognizant.code.test.domain.model.Product;
 import com.cognizant.code.test.domain.repository.ProductRepository;
-import com.cognizant.code.test.infrastructure.handler.ProductNotFoundException;
+import com.cognizant.code.test.infrastructure.exception.ProductNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

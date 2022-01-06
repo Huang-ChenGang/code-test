@@ -7,14 +7,16 @@ import com.cognizant.code.test.domain.repository.CartItemRepository;
 import com.cognizant.code.test.domain.repository.CartRepository;
 import com.cognizant.code.test.domain.repository.ProductRepository;
 import com.cognizant.code.test.infrastructure.exception.CodeTestException;
-import com.cognizant.code.test.infrastructure.handler.ProductNotFoundException;
+import com.cognizant.code.test.infrastructure.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,6 +59,30 @@ class CartApplicationServiceTest {
 
         assertEquals(1, cartRepository.findAll().size());
         assertEquals(1, cartItemRepository.findAll().size());
+    }
+
+    @Test
+    void testAddCartItemRepeatedProduct() {
+        Product product = new Product();
+        product.setName("test product");
+        product.setPrice(BigDecimal.TEN);
+        product.setTax(BigDecimal.TEN);
+        product.setQuantity(100);
+        product = productRepository.save(product);
+
+        CartItemAddRequestData requestData = new CartItemAddRequestData();
+        requestData.setCustomerId(customerId);
+
+        List<CartItemAddData> productList = new ArrayList<>();
+        productList.add(new CartItemAddData(product.getId(), 1));
+        productList.add(new CartItemAddData(product.getId(), 20));
+        requestData.setProductList(productList);
+
+        service.addCartItem(requestData);
+
+        assertEquals(1, cartRepository.findAll().size());
+        assertEquals(1, cartItemRepository.findAll().size());
+        assertEquals(21, cartItemRepository.findAll().get(0).getQuantity());
     }
 
     @Test

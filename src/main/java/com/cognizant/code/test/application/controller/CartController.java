@@ -1,7 +1,7 @@
 package com.cognizant.code.test.application.controller;
 
 import com.cognizant.code.test.api.CartItemAddRequestData;
-import com.cognizant.code.test.api.CartProductSaveRequestData;
+import com.cognizant.code.test.api.CartItemUpdateRequestData;
 import com.cognizant.code.test.application.service.CartApplicationService;
 import com.cognizant.code.test.infrastructure.api.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +30,9 @@ public class CartController {
     }
 
     @PutMapping("/product")
-    public ServerResponse<Void> updateCartProduct(@RequestBody @Valid CartProductSaveRequestData requestData) {
+    public ServerResponse<Void> updateCartProduct(@RequestBody @Valid CartItemUpdateRequestData requestData) {
         log.info("attempt to update product to cart for request data: {}", requestData);
-        service.saveCartProduct(requestData);
+        service.updateCartItem(requestData);
         return ServerResponse.success();
     }
 }
