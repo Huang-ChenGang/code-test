@@ -20,7 +20,7 @@ public class ProductApplicationServiceImpl implements ProductApplicationService 
     }
 
     @Override
-    public ProductDto findById(String id) {
-        return ProductDto.fromModel(service.findById(id));
+    public int findQuantity(String id) {
+        return service.findById(id).getQuantity();
     }
 }

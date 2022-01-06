@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -102,6 +103,7 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = cartOptional.get();
         requestData.getCartItemIdList().stream()
+                .distinct()
                 .filter(cId -> cartItemRepository.findById(cId).isPresent())
                 .peek(cId -> {
                     CartItem cartItem = findCartItem(cId);
@@ -110,6 +112,17 @@ public class CartServiceImpl implements CartService {
                     }
                 })
                 .forEach(cartItemRepository::deleteById);
+    }
+
+    @Override
+    public List<CartItem> findCartItemList(String customerId) {
+        Optional<Cart> cartOptional = cartRepository.findByCustomerId(customerId);
+        if (cartOptional.isEmpty()) {
+            log.warn("cart not exist when find cart item list, customerId: {}", customerId);
+            return null;
+        }
+
+        return cartItemRepository.findByCartId(cartOptional.get().getId());
     }
 
 }
